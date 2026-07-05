@@ -57,16 +57,164 @@ metadata:
 
 ## 功能概述
 
-本 Skill 是**自包含**的：分拣规则 YAML **直接内嵌在 SKILL.md 的「使用示例 > 最小规则文件」章节中**，Agent 从本文件读取规则，不需要从外部仓库拉取、不需要创建本地文件。
+本 Skill 是**自包含**的：分拣规则 JSON **直接内嵌在 SKILL.md 的「机器可读规则块」章节中**，Agent 或自动化脚本从本文件读取规则，不需要从外部仓库拉取、不需要创建本地文件。下方 YAML 仍作为 Schema 示例保留，便于人类阅读。
 
 1. **后端检测**：Agent 自动识别当前仓库所在的平台（GitHub / GitLink / GitLab / Gitee）
-2. **读取规则**：Agent 直接从本 SKILL.md 的内嵌 YAML 块读取规则（见下文「最小规则文件」小节）
+2. **读取规则**：Agent 直接从本 SKILL.md 的内嵌 JSON 块读取规则（见下文「机器可读规则块」小节）
 3. **匹配规则**：对每条 Issue 按规则评分；`mode: rule` 直接采纳；`mode: hybrid` 规则无命中时由 LLM 兜底；`mode: ai` 规则仅作为 prompt 提示
 4. **dry-run 预览**：Agent 输出分拣建议，等待用户确认
 5. **写回**：用户确认后，Agent 用对应平台 CLI 执行写回（PATCH / edit / update / curl）
 6. **可审计**：每次写入附带 `matched_rules` 字段（写入 Issue comment 中），方便人工复核
 
 > **⚠️ 设计约束**：本 Skill **不走仓库 `.triage/rules.yml` 文件**，规则全部内嵌于 SKILL.md。这样 Skill 可在任意仓库复用、零外部依赖。
+
+## 机器可读规则块（供自动化工作流读取）
+
+下面的 JSON 块是本 Skill 的稳定规则接口。社区运营自动化工作流会直接读取该块完成 Issue 分类、标签候选、优先级和负责人建议。
+
+<!-- TRIAGE_RULES_JSON_START -->
+```json
+{
+  "version": 1,
+  "mode": "rule",
+  "skill": {
+    "name": "gitlink-issue-triage-rules",
+    "version": "1.0.0"
+  },
+  "defaults": {
+    "dry_run": true,
+    "priority": "P3",
+    "skip_when": {
+      "has_label_any": ["wontfix", "duplicate", "重复", "已关闭"]
+    }
+  },
+  "priority_ids": {
+    "P0": 4,
+    "P1": 3,
+    "P2": 2,
+    "P3": 1,
+    "critical": 4,
+    "high": 3,
+    "normal": 2,
+    "low": 1
+  },
+  "labels_by_type": {
+    "bug": ["缺陷", "bug"],
+    "feature": ["功能", "enhancement"],
+    "question": ["疑问", "question"],
+    "docs": ["文档", "documentation"],
+    "security": ["缺陷", "security"],
+    "performance": ["缺陷", "performance"],
+    "ci": ["测试", "ci"],
+    "refactor": ["任务", "refactor"],
+    "duplicate": ["重复", "duplicate"]
+  },
+  "assigners_by_type": {
+    "bug": [153579],
+    "feature": [153579],
+    "question": [153579],
+    "docs": [153579],
+    "security": [153579],
+    "performance": [153579],
+    "ci": [153579],
+    "refactor": [153579],
+    "duplicate": [153579]
+  },
+  "rules": [
+    {
+      "id": "security-sensitive",
+      "type": "security",
+      "label": ["缺陷", "security"],
+      "priority": "critical",
+      "match": {
+        "any_keyword": ["漏洞", "安全", "权限", "认证", "token", "secret", "泄露", "CVE", "SQL 注入", "XSS", "越权"]
+      }
+    },
+    {
+      "id": "duplicate-detect",
+      "type": "duplicate",
+      "label": ["重复", "duplicate"],
+      "priority": "low",
+      "match": {
+        "any_keyword": ["重复", "duplicate", "同问题", "如 #", "same as", "duplicated"]
+      }
+    },
+    {
+      "id": "bug-crash",
+      "type": "bug",
+      "label": ["缺陷", "bug"],
+      "priority": "high",
+      "match": {
+        "any_keyword": ["崩溃", "闪退", "panic", "crash", "无法启动", "无法登录", "安装失败"]
+      }
+    },
+    {
+      "id": "performance-default",
+      "type": "performance",
+      "label": ["缺陷", "performance"],
+      "priority": "normal",
+      "match": {
+        "any_keyword": ["性能", "很慢", "卡顿", "延迟", "内存", "CPU", "cpu", "latency", "slow", "超时"]
+      }
+    },
+    {
+      "id": "ci-build",
+      "type": "ci",
+      "label": ["测试", "ci"],
+      "priority": "normal",
+      "match": {
+        "any_keyword": ["CI", "ci", "构建失败", "build failed", "pipeline", "测试失败", "单测失败", "lint"]
+      }
+    },
+    {
+      "id": "bug-default",
+      "type": "bug",
+      "label": ["缺陷", "bug"],
+      "priority": "high",
+      "match": {
+        "any_keyword": ["bug", "错误", "失败", "异常", "报错", "问题", "不可用", "无响应", "不一致", "消失", "变红色", "缺少", "缺失", "不替换", "未生效", "不能", "无法", "timeout", "error", "failed"]
+      }
+    },
+    {
+      "id": "feature-request",
+      "type": "feature",
+      "label": ["功能", "enhancement"],
+      "priority": "normal",
+      "match": {
+        "any_keyword": ["建议", "希望", "支持", "是否支持", "新增", "增加", "需要", "让", "自动", "需求", "feature", "enhancement", "request"]
+      }
+    },
+    {
+      "id": "question-default",
+      "type": "question",
+      "label": ["疑问", "question"],
+      "priority": "low",
+      "match": {
+        "any_keyword": ["请问", "如何", "怎么", "是否", "讨论", "反馈", "how to", "求助", "咨询", "使用方式"]
+      }
+    },
+    {
+      "id": "docs-default",
+      "type": "docs",
+      "label": ["文档", "documentation"],
+      "priority": "low",
+      "match": {
+        "any_keyword": ["文档", "README", "readme", "typo", "错别字", "说明", "教程", "示例"]
+      }
+    },
+    {
+      "id": "refactor-default",
+      "type": "refactor",
+      "label": ["任务", "refactor"],
+      "priority": "low",
+      "match": {
+        "any_keyword": ["重构", "清理", "优化结构", "refactor", "cleanup", "技术债"]
+      }
+    }
+  ]
+}
+```
+<!-- TRIAGE_RULES_JSON_END -->
 
 ## 触发场景
 
@@ -190,12 +338,12 @@ case "$BACKEND" in
 esac
 ```
 
-### Step 1：加载规则（从 SKILL.md 内嵌 YAML 块）
+### Step 1：加载规则（从 SKILL.md 内嵌 JSON 块）
 
 **本步骤不需要任何外部文件操作**。Agent 按以下逻辑加载规则：
 
 ```
-1. Agent 从本 SKILL.md 的「最小规则文件」小节读取内嵌的 YAML 代码块
+1. Agent 从本 SKILL.md 的 `TRIAGE_RULES_JSON_START/END` 标记之间读取内嵌 JSON 代码块
 2. 解析为内存数据结构：
    - mode（rule / hybrid / ai）
    - defaults
@@ -210,7 +358,7 @@ esac
 - ✅ 可移植：同一个 Skill 在 100 个仓库用 100 次，规则完全一致
 - ⚠️ 代价：修改规则需改 SKILL.md 本体（而非仓库文件）
 
-**如需自定义规则**：编辑本 SKILL.md 的「最小规则文件」小节，替换其中 YAML 代码块即可。无需改工作流 Step 1。
+**如需自定义规则**：编辑本 SKILL.md 的「机器可读规则块」小节，替换其中 JSON 代码块即可。无需改工作流 Step 1。
 
 ### Step 2：识别目标 Issue（按后端选命令）
 
