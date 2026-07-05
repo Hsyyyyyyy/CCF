@@ -1,0 +1,48 @@
+{
+  "ok": true,
+  "data": {
+    "author": {
+      "id": 153579,
+      "image_url": "system/lets/letter_avatars/2/A/58_176_151/120.png",
+      "login": "Angel123456",
+      "name": "Angel123456",
+      "type": "User"
+    },
+    "clone_url": "https://gitlink.org.cn/Angel123456/gitlink-cli.git",
+    "contributor_users_count": 0,
+    "default_branch": "master",
+    "empty": false,
+    "fork_info": {
+      "fork_form_name": "gitlink-cli",
+      "fork_project_identifier": "gitlink-cli",
+      "fork_project_user_login": "Gitlink",
+      "fork_project_user_name": "GitLink"
+    },
+    "forked_count": 0,
+    "forked_from_project_id": 1513956,
+    "full_name": "Angel123456/gitlink-cli",
+    "identifier": "gitlink-cli",
+    "issues_count": 5,
+    "mirror": false,
+    "mirror_url": null,
+    "name": "gitlink-cli",
+    "open_devops": false,
+    "permission": "Owner",
+    "praised": false,
+    "praises_count": 0,
+    "private": false,
+    "project_id": 1549070,
+    "project_identifier": "gitlink-cli",
+    "pull_requests_count": 0,
+    "repo_id": 1550682,
+    "size": "39.9 MB",
+    "ssh_url": "git@code.gitlink.org.cn:Angel123456/gitlink-cli.git",
+    "status": 1,
+    "type": 0,
+    "version_releases_count": 0,
+    "version_releasesed_count": 0,
+    "versions_count": 0,
+    "watched": false,
+    "watchers_count": 0
+  }
+}

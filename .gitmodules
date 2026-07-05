@@ -1,0 +1,3 @@
+[submodule "gitlink-cli"]
+	path = gitlink-cli
+	url = https://gitlink.org.cn/Angel123456/gitlink-cli.git
