@@ -109,16 +109,40 @@ metadata:
     "refactor": ["任务", "refactor"],
     "duplicate": ["重复", "duplicate"]
   },
+  "members": [
+    {
+      "id": 153579,
+      "login": "Angel123456",
+      "name": "Angel123456",
+      "role": "Manager",
+      "role_name": "管理员"
+    },
+    {
+      "id": 134328,
+      "login": "Hsy15889521073",
+      "name": "Hsy15889521073",
+      "role": "Developer",
+      "role_name": "开发者"
+    },
+    {
+      "id": 134450,
+      "login": "Priziq",
+      "name": "Priziq",
+      "role": "Reporter",
+      "role_name": "报告者"
+    }
+  ],
+  "assignment_strategy": "type-map-config",
   "assigners_by_type": {
-    "bug": [153579],
-    "feature": [153579],
-    "question": [153579],
-    "docs": [153579],
     "security": [153579],
+    "bug": [153579],
     "performance": [153579],
-    "ci": [153579],
-    "refactor": [153579],
-    "duplicate": [153579]
+    "feature": [134328],
+    "refactor": [134328],
+    "ci": [134328],
+    "question": [134450],
+    "docs": [134450],
+    "duplicate": [134450]
   },
   "rules": [
     {
