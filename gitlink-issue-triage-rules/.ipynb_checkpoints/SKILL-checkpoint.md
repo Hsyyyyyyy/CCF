@@ -45,9 +45,9 @@ metadata:
 
 # gitlink-issue-triage-rules（跨平台 Issue 规则驱动分拣）
 
-## **CRITICAL — 开始前必须先阅读 [`../gitlink-shared/SKILL.md`](https://www.gitlink.org.cn/Gitlink/gitlink-cli/tree/master/skills/gitlink-shared/SKILL.md)（仅 GitLink 后端）或对应平台的 CLI 文档。所有 GitHub 操作必须使用 `gh`；所有 GitLab 操作必须使用 `glab`；所有 GitLink 操作必须使用 `gitlink-cli`。禁止混用或替代。**
-## **CRITICAL — 本 Skill 包含写入操作（打标签、分配责任人、设置优先级、添加评论）。默认必须先做 dry-run（仅预览），经用户明确确认后才执行写回。**
-## **CRITICAL — 更新 Issue 时必须先 `view` 获取当前标题和正文，并在写回请求中一并提交，否则这两个字段会被清空（不同平台字段名不同，详见下文「平台适配」）。**
+**CRITICAL — 开始前必须先阅读 [`../gitlink-shared/SKILL.md`](https://www.gitlink.org.cn/Gitlink/gitlink-cli/tree/master/skills/gitlink-shared/SKILL.md)（仅 GitLink 后端）或对应平台的 CLI 文档。所有 GitHub 操作必须使用 `gh`；所有 GitLab 操作必须使用 `glab`；所有 GitLink 操作必须使用 `gitlink-cli`。禁止混用或替代。**
+**CRITICAL — 本 Skill 包含写入操作（打标签、分配责任人、设置优先级、添加评论）。默认必须先做 dry-run（仅预览），经用户明确确认后才执行写回。**
+**CRITICAL — 更新 Issue 时必须先 `view` 获取当前标题和正文，并在写回请求中一并提交，否则这两个字段会被清空（不同平台字段名不同，详见下文「平台适配」）。**
 
 > **依赖工具：** 二选一即可——`gitlink-cli` / `gh` / `glab`，外加 `jq`。
 > **依赖 Skill：** 使用 GitLink 后端时需加载 `gitlink-shared`；使用 GitHub / GitLab 时无需额外 Skill。
